@@ -4,20 +4,14 @@ import os
 import json
 import hashlib
 from pathlib import Path
-from dotenv import load_dotenv
-
 from langsmith import traceable
-
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from llm import chat_model, embedding_model
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
-
-load_dotenv()
-
 PDF_PATH = "islr.pdf"  # change to your file
 INDEX_ROOT = Path(".indices")
 INDEX_ROOT.mkdir(exist_ok=True)
@@ -36,9 +30,7 @@ def split_documents(docs, chunk_size=1000, chunk_overlap=150):
 
 @traceable(name="build_vectorstore")
 def build_vectorstore(splits, embed_model_name: str):
-    emb = OpenAIEmbeddings(model=embed_model_name)
-    return FAISS.from_documents(splits, emb)
-
+    emb = embedding_model
 # ----------------- cache key / fingerprint -----------------
 def _file_fingerprint(path: str) -> dict:
     p = Path(path)
@@ -61,7 +53,7 @@ def _index_key(pdf_path: str, chunk_size: int, chunk_overlap: int, embed_model_n
 # ----------------- explicitly traced load/build runs -----------------
 @traceable(name="load_index", tags=["index"])
 def load_index_run(index_dir: Path, embed_model_name: str):
-    emb = OpenAIEmbeddings(model=embed_model_name)
+    emb = embedding_model
     return FAISS.load_local(
         str(index_dir),
         emb,
@@ -100,7 +92,7 @@ def load_or_build_index(
         return build_index_run(pdf_path, index_dir, chunk_size, chunk_overlap, embed_model_name)
 
 # ----------------- model, prompt, and pipeline -----------------
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = chat_model
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "Answer ONLY from the provided context. If not found, say you don't know."),

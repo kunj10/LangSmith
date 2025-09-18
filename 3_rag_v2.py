@@ -2,26 +2,18 @@
 
 import os
 from dotenv import load_dotenv
-
 from langsmith import traceable  # <-- key import
-
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from llm import chat_model, embedding_model
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 
-# --- LangSmith env (make sure these are set) ---
-# LANGCHAIN_TRACING_V2=true
-# LANGCHAIN_API_KEY=...
-# LANGCHAIN_PROJECT=pdf_rag_demo
-
 load_dotenv()
 
-PDF_PATH = "islr.pdf"  # change to your file
-
+PDF_PATH = "islr.pdf" 
 # ---------- traced setup steps ----------
 @traceable(name="load_pdf")
 def load_pdf(path: str):
@@ -37,7 +29,7 @@ def split_documents(docs, chunk_size=1000, chunk_overlap=150):
 
 @traceable(name="build_vectorstore")
 def build_vectorstore(splits):
-    emb = OpenAIEmbeddings(model="text-embedding-3-small")
+    emb = embedding_model
     # FAISS.from_documents internally calls the embedding model:
     vs = FAISS.from_documents(splits, emb)
     return vs
@@ -51,7 +43,7 @@ def setup_pipeline(pdf_path: str):
     return vs
 
 # ---------- pipeline ----------
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = chat_model
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "Answer ONLY from the provided context. If not found, say you don't know."),
