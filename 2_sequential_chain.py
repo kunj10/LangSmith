@@ -23,6 +23,6 @@ config = {
     'metadata' : {'model' : 'Google Gemini'}
 }
 
-result = chain.invoke({'topic': 'Unemployment in India'})
+result = chain.invoke({'topic': 'Unemployment in India'}, config = config)
 
 print(result)

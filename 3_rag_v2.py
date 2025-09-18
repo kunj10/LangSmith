@@ -10,10 +10,10 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
-
+os.environ["LANGCHAIN_PROJECT"]  = "RAG Chatbot"
 load_dotenv()
 
-PDF_PATH = "islr.pdf" 
+PDF_PATH = "Algos.pdf" 
 # ---------- traced setup steps ----------
 @traceable(name="load_pdf")
 def load_pdf(path: str):
