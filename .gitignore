@@ -2,3 +2,4 @@
 *.env
 *Algos.pdf
 *.indices
+*__pycache__
