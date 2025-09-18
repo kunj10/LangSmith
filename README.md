@@ -64,39 +64,6 @@ cd <repo-folder>
 # Install dependencies
 pip install -U langchain langchain-openai langchain-community faiss-cpu pypdf python-dotenv langsmith langgraph pydantic requests
 ```
-
-------------------------------------------------------------------------
-
-## 📖 Usage Guide
-
-### 1️⃣ Run the RAG PDF System
-
-``` bash
-python rag_pdf.py
-```
-
--   Place your PDF as `Algos.pdf` (or update path).\
--   Ask natural language questions → system answers from PDF context.
-
-### 2️⃣ Run the Agent System
-
-``` bash
-python agent.py
-```
-
--   Example query: *"Birth Place of Narendra Modi and give me the
-    current temperature"*\
--   Agent combines search + weather API to produce answer.
-
-### 3️⃣ Run the LangGraph Essay Evaluator
-
-``` bash
-python essay_graph.py
-```
-
--   Evaluates a given essay → Provides dimension-wise feedback + average
-    score.
-
 ------------------------------------------------------------------------
 
 ## 📦 Dependencies
